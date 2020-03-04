@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'list/ListItem.dart';
+
 void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {
@@ -21,7 +23,8 @@ class TodoList extends StatefulWidget {
 }
 
 class TodoState extends State<TodoList> {
-  List<String> _todoItems = [];
+  List<ListItem> _allItems = List<ListItem>.generate(
+      2, (i) => i == 0 ? EditTextItem() : TodoItem("123"));
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +35,18 @@ class TodoState extends State<TodoList> {
   }
 
   Widget _buildTodoList() {
-    _todoItems.add("123");
-    _todoItems.add("456");
     return new ListView.builder(
-      itemCount: _todoItems.length,
+      itemCount: _allItems.length,
       itemBuilder: (context, index) {
-        if (index < _todoItems.length) {
-          return _buildTodoItem(_todoItems[index]);
+        final item = _allItems[index];
+        if (item is EditTextItem) {
+          return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                decoration: InputDecoration(hintText: 'Enter a new todo item'),
+              ));
+        } else if (item is TodoItem) {
+          return _buildTodoItem(item.text);
         }
         return null;
       },
