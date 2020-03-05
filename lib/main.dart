@@ -24,7 +24,18 @@ class TodoList extends StatefulWidget {
 
 class TodoState extends State<TodoList> {
   List<ListItem> _allItems = List<ListItem>.generate(
-      2, (i) => i == 0 ? EditTextItem() : TodoItem("123"));
+      1, (i) => i == 0 ? EditTextItem() : TodoItem("123"));
+
+  List<TodoItem> _todoItems = List<TodoItem>();
+
+  void _addTodoItem(String text) {
+    setState(() {
+      _todoItems.add(TodoItem(text));
+      _allItems.clear();
+      _allItems.add(EditTextItem());
+      _allItems.addAll(_todoItems);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +44,8 @@ class TodoState extends State<TodoList> {
       body: _buildTodoList(),
     );
   }
+
+  var txtController = TextEditingController(text: "");
 
   Widget _buildTodoList() {
     return new ListView.builder(
@@ -43,6 +56,11 @@ class TodoState extends State<TodoList> {
           return Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
+                controller: txtController,
+                onSubmitted: (value) {
+                  _addTodoItem(value);
+                  txtController.text = "";
+                },
                 decoration: InputDecoration(hintText: 'Enter a new todo item'),
               ));
         } else if (item is TodoItem) {
