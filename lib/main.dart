@@ -64,14 +64,28 @@ class TodoState extends State<TodoList> {
                 decoration: InputDecoration(hintText: 'Enter a new todo item'),
               ));
         } else if (item is TodoItem) {
-          return _buildTodoItem(item.text);
+          return _buildTodoItem(item);
         }
         return null;
       },
     );
   }
 
-  Widget _buildTodoItem(String todoText) {
-    return new ListTile(title: new Text(todoText));
+  Widget _buildTodoItem(TodoItem item) {
+    var textStyle = new TextStyle(color: Colors.black);
+    if (item.isChecked) {
+      textStyle = new TextStyle(
+          color: Colors.grey, decoration: TextDecoration.lineThrough);
+    }
+
+    return new CheckboxListTile(
+      title: new Text(item.text, style: textStyle),
+      value: item.isChecked,
+      onChanged: (value) {
+        setState(() {
+          item.isChecked = value;
+        });
+      },
+    );
   }
 }
